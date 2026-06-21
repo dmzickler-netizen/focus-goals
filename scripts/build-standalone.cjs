@@ -21,11 +21,12 @@ ${css}
 <div class="app">
   <header>
     <h1>🎯 Focus &amp; Goals</h1>
-    <p class="sub">Fokus-Sessions, die auf deine Ziele einzahlen. Alles lokal im Browser gespeichert.</p>
+    <p class="sub">Vision festlegen, Ziele über kurz-/mittel-/langfristig setzen – geführt. Fokus-Sessions zahlen darauf ein. Alles lokal im Browser.</p>
   </header>
-  <section id="focusCard" class="focus"></section>
-  <section id="today"></section>
-  <section id="goals"></section>
+  <section id="wizard" style="display:none"></section>
+  <section id="areas"></section>
+  <section id="focusCard"></section>
+  <section id="overview"></section>
 </div>
 <script>
 ${app}

@@ -76,3 +76,52 @@ input::placeholder { color: var(--muted); }
 .muted { color: var(--muted); }
 .flash { animation: flash 0.8s ease 3; }
 @keyframes flash { 50% { background: rgba(0,208,132,0.25); } }
+
+.small { font-size: 12px; }
+textarea { width: 100%; background: var(--panel2); color: var(--text); border: 1px solid var(--line); border-radius: 8px; padding: 10px; font: inherit; resize: vertical; }
+label.fld { display: block; margin: 10px 0; font-size: 13px; color: var(--muted); }
+label.fld input { display: block; width: 100%; margin-top: 4px; }
+
+/* Areas overview */
+.areas-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.areas-head h2 { margin: 0; }
+.area { background: var(--panel2); border-radius: 12px; padding: 14px; margin-top: 12px; }
+.area-h { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.ai { font-size: 18px; }
+.vision { margin: 8px 0 4px; font-size: 14px; }
+.hz { margin-top: 10px; }
+.hz-lbl { font-size: 12px; text-transform: uppercase; letter-spacing: .5px; color: var(--accent2); margin-bottom: 4px; }
+.hz-lbl.muted { color: var(--muted); }
+
+.season { background: linear-gradient(135deg, rgba(0,208,132,0.18), rgba(74,168,255,0.12)); border: 1px solid var(--accent); border-radius: 12px; padding: 12px 16px; margin: 12px 0; }
+.season-lbl { color: var(--accent); font-weight: 700; font-size: 13px; }
+.season-goal { font-size: 18px; font-weight: 700; margin: 2px 0; }
+
+.goal { background: var(--panel); border-radius: 10px; padding: 12px; margin-bottom: 8px; border-left: 4px solid var(--line); }
+.goal.season-pri { border-left-color: var(--accent); }
+.goal.done { opacity: 0.55; }
+.goal-head { display: flex; align-items: center; gap: 8px; }
+.goal-title { font-size: 15px; font-weight: 600; flex: 1; }
+.goal-actions { display: flex; gap: 4px; }
+.goal-meta { color: var(--muted); font-size: 12px; margin-top: 4px; display: flex; gap: 8px; flex-wrap: wrap; }
+.bar { height: 7px; background: var(--line); border-radius: 5px; overflow: hidden; margin: 8px 0 4px; }
+.bar > span { display: block; height: 100%; background: var(--accent); }
+.goal-stats { display: flex; gap: 14px; color: var(--muted); font-size: 12px; }
+.miles { list-style: none; margin: 8px 0 0; padding: 0; }
+.miles li { display: flex; align-items: center; gap: 8px; padding: 3px 0; }
+.miles li.done .mt { text-decoration: line-through; color: var(--muted); }
+.miles .mt { flex: 1; }
+.addrow { display: flex; gap: 8px; margin-top: 8px; }
+.addrow input { flex: 1; }
+.due-soon { color: var(--warn); } .due-over { color: var(--danger); }
+
+/* Wizard */
+.wiz-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.wiz-prog { color: var(--muted); font-size: 12px; }
+.area-pick { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr)); gap: 10px; margin-top: 12px; }
+.area-btn { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 14px; text-align: left; }
+.area-btn .ai { font-size: 22px; }
+.area-btn small { color: var(--muted); font-weight: 400; }
+.wiz-nav { display: flex; justify-content: space-between; gap: 10px; margin-top: 16px; }
+.wiz-nav button:only-child { margin-left: auto; }
+.review { margin: 8px 0 0; padding-left: 18px; line-height: 1.7; }
