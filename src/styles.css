@@ -83,8 +83,9 @@ label.fld { display: block; margin: 10px 0; font-size: 13px; color: var(--muted)
 label.fld input { display: block; width: 100%; margin-top: 4px; }
 
 /* Areas overview */
-.areas-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.areas-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
 .areas-head h2 { margin: 0; }
+.areas-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 .area { background: var(--panel2); border-radius: 12px; padding: 14px; margin-top: 12px; }
 .area-h { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .ai { font-size: 18px; }

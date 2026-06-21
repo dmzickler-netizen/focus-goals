@@ -66,6 +66,63 @@
   function goalProgress(g){ if(g.status==='done')return 100; if(!g.milestones||!g.milestones.length)return 0; return Math.round(g.milestones.filter(function(m){return m.done}).length/g.milestones.length*100) }
   function seasonGoal(){ return state.goals.find(function(g){return g.seasonPriority && g.status!=='done'}) }
 
+  // ---------- Export (Notion) ----------
+  var HZ_LABEL = { long:'Langfristig (~1 Jahr)', mid:'Mittelfristig (1–3 Monate)', short:'Kurzfristig (1–2 Wochen)' }
+  function download(name, text, mime){
+    try{
+      var b=new Blob([text],{type:mime+';charset=utf-8'}), u=URL.createObjectURL(b)
+      var a=document.createElement('a'); a.href=u; a.download=name; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(u)
+    }catch(e){ alert('Download nicht möglich: '+e) }
+  }
+  function csvCell(v){ v=(v==null?'':String(v)); return '"'+v.replace(/"/g,'""')+'"' }
+  function exportCSV(){
+    var head=['Bereich','Vision','Horizont','Ziel','Messbar','Deadline','Fortschritt %','Status','Saison-Prioritaet','Fokus (min)']
+    var rows=[head.map(csvCell).join(',')]
+    state.areas.forEach(function(a){
+      goalsOfArea(a.id).forEach(function(g){
+        rows.push([ a.name, a.vision||'', HZ_LABEL[g.horizon]||g.horizon, g.title, g.measurable||'',
+          g.deadline||'', goalProgress(g), g.status==='done'?'Erledigt':'Aktiv',
+          g.seasonPriority?'Ja':'', goalFocus(g.id).min ].map(csvCell).join(','))
+      })
+    })
+    download('focus-goals.csv', '﻿'+rows.join('\r\n'), 'text/csv')
+  }
+  function buildMarkdown(){
+    var lines=['# Focus & Goals — Export ('+new Date().toLocaleDateString('de')+')','']
+    var sg=seasonGoal()
+    if(sg){ var sa=areaById(sg.areaId); lines.push('> ★ **Diese Saison – die eine Sache:** '+(sa?sa.name+': ':'')+sg.title,'') }
+    state.areas.forEach(function(a){
+      var goals=goalsOfArea(a.id)
+      if(!a.vision && !goals.length) return
+      lines.push('## '+(AREA_ICON[a.id]||'🎯')+' '+a.name)
+      if(a.vision) lines.push('**Vision:** '+a.vision)
+      HORIZONS.forEach(function(hz){
+        var list=goals.filter(function(g){return g.horizon===hz.key})
+        if(!list.length) return
+        lines.push('','### '+hz.label+' · '+hz.span)
+        list.forEach(function(g){
+          var bits=[]
+          if(g.measurable) bits.push('🎯 '+g.measurable)
+          if(g.deadline) bits.push('📅 '+g.deadline)
+          bits.push(goalProgress(g)+'%')
+          if(g.status==='done') bits.push('✅ erledigt')
+          if(g.seasonPriority) bits.push('★ Saison')
+          lines.push('- **'+g.title+'**'+(bits.length?' — '+bits.join(' · '):''))
+          ;(g.milestones||[]).forEach(function(m){ lines.push('    - ['+(m.done?'x':' ')+'] '+m.text) })
+        })
+      })
+      lines.push('')
+    })
+    return lines.join('\n')
+  }
+  function exportMarkdown(){
+    var md=buildMarkdown()
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(md).then(function(){ alert('Markdown in die Zwischenablage kopiert.\n\nIn Notion: neue Seite öffnen und einfügen (Cmd/Ctrl+V).') },
+        function(){ download('focus-goals.md', md, 'text/markdown') })
+    } else download('focus-goals.md', md, 'text/markdown')
+  }
+
   // ---------- Timer ----------
   function beep(){ try{ var c=new (window.AudioContext||window.webkitAudioContext)(),o=c.createOscillator(),g=c.createGain(); o.connect(g);g.connect(c.destination); o.type='sine';o.frequency.value=660;g.gain.value=0.15;o.start();o.stop(c.currentTime+0.25) }catch(e){} }
   function stopInt(){ if(timer.intId){clearInterval(timer.intId);timer.intId=null} }
@@ -206,7 +263,10 @@
   // ---------- Render: Bereiche & Ziele ----------
   function renderAreas(){
     var box=el('areas')
-    var h='<div class="areas-head"><h2>Bereiche & Ziele</h2><button id="startWiz" class="primary">🧭 Ziel-Assistent</button></div>'
+    var h='<div class="areas-head"><h2>Bereiche & Ziele</h2><div class="areas-actions">'
+      +'<button id="startWiz" class="primary">🧭 Ziel-Assistent</button>'
+      +'<button id="expCsv" class="sm">⬇ Notion-CSV</button>'
+      +'<button id="expMd" class="sm">⬇ Markdown</button></div></div>'
 
     var sg=seasonGoal()
     if(sg){ var sa=areaById(sg.areaId)
@@ -235,6 +295,8 @@
     box.innerHTML=h
 
     el('startWiz').onclick=function(){ startWizard('') }
+    el('expCsv').onclick=exportCSV
+    el('expMd').onclick=exportMarkdown
     box.querySelectorAll('[data-wiz]').forEach(function(b){ b.onclick=function(){ startWizard(b.getAttribute('data-wiz')) } })
     bindGoalEvents(box)
   }
